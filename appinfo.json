@@ -1,0 +1,9 @@
+{
+	"id": "com.robbies.sunriseclock",
+	"version": "0.0.1",
+	"vendor": "RobbieNesmithInc",
+	"type": "web",
+	"main": "index.html",
+	"title": "Sunrise Clock",
+	"icon": "icon.png"
+}

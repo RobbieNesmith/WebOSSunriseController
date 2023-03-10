@@ -67,13 +67,18 @@ ManualAssistant.prototype.setup = function () {
 
   /* add event handlers to listen to events from widgets */
 
+  this.redHandler = this.setColor({ red: 255, green: 0, blue: 0, white: 0 }).bindAsEventListener(this);
+  this.greenHandler = this.setColor({ red: 0, green: 255, blue: 0, white: 0 }).bindAsEventListener(this);
+  this.blueHandler = this.setColor({ red: 0, green: 0, blue: 255, white: 0 }).bindAsEventListener(this);
+  this.whiteHandler = this.setColor({ red: 0, green: 0, blue: 0, white: 255 }).bindAsEventListener(this);
+  this.offHandler = this.setColor({ red: 0, green: 0, blue: 0, white: 0 }).bindAsEventListener(this);
   this.backHandler = this.goBack.bindAsEventListener(this);
 
-  Mojo.Event.listen(this.controller.get("redButton"), Mojo.Event.tap, this.setRed);
-  Mojo.Event.listen(this.controller.get("greenButton"), Mojo.Event.tap, this.setGreen);
-  Mojo.Event.listen(this.controller.get("blueButton"), Mojo.Event.tap, this.setBlue);
-  Mojo.Event.listen(this.controller.get("whiteButton"), Mojo.Event.tap, this.setWhite);
-  Mojo.Event.listen(this.controller.get("offButton"), Mojo.Event.tap, this.setOff);
+  Mojo.Event.listen(this.controller.get("redButton"), Mojo.Event.tap, this.redHandler);
+  Mojo.Event.listen(this.controller.get("greenButton"), Mojo.Event.tap, this.greenHandler);
+  Mojo.Event.listen(this.controller.get("blueButton"), Mojo.Event.tap, this.blueHandler);
+  Mojo.Event.listen(this.controller.get("whiteButton"), Mojo.Event.tap, this.whiteHandler);
+  Mojo.Event.listen(this.controller.get("offButton"), Mojo.Event.tap, this.offHandler);
   Mojo.Event.listen(this.controller.get("backButton"), Mojo.Event.tap, this.backHandler);
 };
 
@@ -88,47 +93,25 @@ ManualAssistant.prototype.deactivate = function (event) {
 };
 
 ManualAssistant.prototype.cleanup = function (event) {
-  Mojo.Event.stopListening(this.controller.get("redButton"), Mojo.Event.tap, this.setRed);
-  Mojo.Event.stopListening(this.controller.get("greenButton"), Mojo.Event.tap, this.setGreen);
-  Mojo.Event.stopListening(this.controller.get("blueButton"), Mojo.Event.tap, this.setBlue);
-  Mojo.Event.stopListening(this.controller.get("whiteButton"), Mojo.Event.tap, this.setWhite);
-  Mojo.Event.stopListening(this.controller.get("offButton"), Mojo.Event.tap, this.setOff);
+  Mojo.Event.stopListening(this.controller.get("redButton"), Mojo.Event.tap, this.redHandler);
+  Mojo.Event.stopListening(this.controller.get("greenButton"), Mojo.Event.tap, this.greenHandler);
+  Mojo.Event.stopListening(this.controller.get("blueButton"), Mojo.Event.tap, this.blueHandler);
+  Mojo.Event.stopListening(this.controller.get("whiteButton"), Mojo.Event.tap, this.whiteHandler);
+  Mojo.Event.stopListening(this.controller.get("offButton"), Mojo.Event.tap, this.offHandler);
   Mojo.Event.stopListening(this.controller.get("backButton"), Mojo.Event.tap, this.backHandler);
 };
 
-ManualAssistant.prototype.setRed = function (event) {
-  var request = new Ajax.Request("http://192.168.7.244/manual?red=255&green=0&blue=0&white=0", {
-    method: "get",
-    evalJSON: "false"
-  });
-}
-
-ManualAssistant.prototype.setGreen = function (event) {
-  var request = new Ajax.Request("http://192.168.7.244/manual?red=0&green=255&blue=0&white=0", {
-    method: "get",
-    evalJSON: "false"
-  });
-}
-
-ManualAssistant.prototype.setBlue = function (event) {
-  var request = new Ajax.Request("http://192.168.7.244/manual?red=0&green=0&blue=255&white=0", {
-    method: "get",
-    evalJSON: "false"
-  });
-}
-
-ManualAssistant.prototype.setWhite = function (event) {
-  var request = new Ajax.Request("http://192.168.7.244/manual?red=0&green=0&blue=0&white=255", {
-    method: "get",
-    evalJSON: "false"
-  });
-}
-
-ManualAssistant.prototype.setOff = function (event) {
-  var request = new Ajax.Request("http://192.168.7.244/manual?red=0&green=0&blue=0&white=0", {
-    method: "get",
-    evalJSON: "false"
-  });
+/**
+@param {{red: number, green: number, blue: number, white: number}} color
+@return {function (Mojo.Event): void}
+*/
+ManualAssistant.prototype.setColor = function (color) {
+  return function (event) {
+    var request = new Ajax.Request("http://192.168.7.244/manual?red=" + color.red + "&green=" + color.green + "&blue=" + color.blue + "&white=" + color.white, {
+      method: "get",
+      evalJSON: "false"
+    });
+  }
 }
 
 ManualAssistant.prototype.goBack = function (event) {

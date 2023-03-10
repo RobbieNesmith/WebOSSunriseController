@@ -1,9 +1,13 @@
 [
-    {
-        "source": "app/assistants/stage-assistant.js"
-    },
-    {
-        "scenes": "first",
-        "source": "app/assistants/first-assistant.js"
-    }
+  {
+    "source": "app/assistants/stage-assistant.js"
+  },
+  {
+    "scenes": "first",
+    "source": "app/assistants/first-assistant.js"
+  },
+  {
+    "scenes": "manual",
+    "source": "app/assistants/manual-assistant.js"
+  }
 ]

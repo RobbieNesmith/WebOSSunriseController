@@ -12,46 +12,10 @@ FirstAssistant.prototype.setup = function () {
 
   /* setup widgets here */
   this.controller.setupWidget(
-    "redButton",
+    "manualButton",
     this.attributes = {},
     this.model = {
-      label: "Set to Red",
-      disabled: false,
-    }
-  );
-
-  this.controller.setupWidget(
-    "greenButton",
-    this.attributes = {},
-    this.model = {
-      label: "Set to Green",
-      disabled: false,
-    }
-  );
-
-  this.controller.setupWidget(
-    "blueButton",
-    this.attributes = {},
-    this.model = {
-      label: "Set to Blue",
-      disabled: false,
-    }
-  );
-
-  this.controller.setupWidget(
-    "whiteButton",
-    this.attributes = {},
-    this.model = {
-      label: "Set to White",
-      disabled: false,
-    }
-  );
-
-  this.controller.setupWidget(
-    "offButton",
-    this.attributes = {},
-    this.model = {
-      label: "Turn Off Lights",
+      label: "Manual Mode",
       disabled: false,
     }
   );
@@ -76,13 +40,13 @@ FirstAssistant.prototype.setup = function () {
 
   /* add event handlers to listen to events from widgets */
 
-  Mojo.Event.listen(this.controller.get("redButton"), Mojo.Event.tap, this.setRed);
-  Mojo.Event.listen(this.controller.get("greenButton"), Mojo.Event.tap, this.setGreen);
-  Mojo.Event.listen(this.controller.get("blueButton"), Mojo.Event.tap, this.setBlue);
-  Mojo.Event.listen(this.controller.get("whiteButton"), Mojo.Event.tap, this.setWhite);
-  Mojo.Event.listen(this.controller.get("offButton"), Mojo.Event.tap, this.setOff);
-  Mojo.Event.listen(this.controller.get("autoButton"), Mojo.Event.tap, this.setAuto);
-  Mojo.Event.listen(this.controller.get("sunsetButton"), Mojo.Event.tap, this.setSunset);
+  this.manualHandler = this.goToManual.bindAsEventListener(this);
+  this.autoHandler = this.setAuto.bindAsEventListener(this);
+  this.sunsetHandler = this.setSunset.bindAsEventListener(this);
+
+  Mojo.Event.listen(this.controller.get("manualButton"), Mojo.Event.tap, this.manualHandler);
+  Mojo.Event.listen(this.controller.get("autoButton"), Mojo.Event.tap, this.autoHandler);
+  Mojo.Event.listen(this.controller.get("sunsetButton"), Mojo.Event.tap, this.sunsetHandler);
 };
 
 FirstAssistant.prototype.activate = function (event) {
@@ -96,43 +60,13 @@ FirstAssistant.prototype.deactivate = function (event) {
 };
 
 FirstAssistant.prototype.cleanup = function (event) {
-  /* this function should do any cleanup needed before the scene is destroyed as 
-     a result of being popped off the scene stack */
+  Mojo.Event.stopListening(this.controller.get("manualButton"), Mojo.Event.tap, this.manualHandler);
+  Mojo.Event.stopListening(this.controller.get("autoButton"), Mojo.Event.tap, this.autoHandler);
+  Mojo.Event.stopListening(this.controller.get("sunsetButton"), Mojo.Event.tap, this.sunsetHandler);
 };
 
-FirstAssistant.prototype.setRed = function (event) {
-  var request = new Ajax.Request("http://192.168.7.244/manual?red=255&green=0&blue=0&white=0", {
-    method: "get",
-    evalJSON: "false"
-  });
-}
-
-FirstAssistant.prototype.setGreen = function (event) {
-  var request = new Ajax.Request("http://192.168.7.244/manual?red=0&green=255&blue=0&white=0", {
-    method: "get",
-    evalJSON: "false"
-  });
-}
-
-FirstAssistant.prototype.setBlue = function (event) {
-  var request = new Ajax.Request("http://192.168.7.244/manual?red=0&green=0&blue=255&white=0", {
-    method: "get",
-    evalJSON: "false"
-  });
-}
-
-FirstAssistant.prototype.setWhite = function (event) {
-  var request = new Ajax.Request("http://192.168.7.244/manual?red=0&green=0&blue=0&white=255", {
-    method: "get",
-    evalJSON: "false"
-  });
-}
-
-FirstAssistant.prototype.setOff = function (event) {
-  var request = new Ajax.Request("http://192.168.7.244/manual?red=0&green=0&blue=0&white=0", {
-    method: "get",
-    evalJSON: "false"
-  });
+FirstAssistant.prototype.goToManual = function (event) {
+  this.controller.stageController.pushScene("manual");
 }
 
 FirstAssistant.prototype.setAuto = function (event) {
